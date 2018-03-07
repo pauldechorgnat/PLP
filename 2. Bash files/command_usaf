@@ -1,0 +1,20 @@
+# creating an input directory
+hdfs dfs -mkdir /input_usaf/
+
+# creating an output directory
+hdfs dfs -mkdir /output_usaf/
+
+# downloading data 
+wget https://www1.ncdc.noaa.gov/pub/data/noaa/isd-history.txt
+
+# copying data from local onto 
+hdfs dfs -copyFromLocal isd-history.txt /input_usaf/usaf_data
+
+# running the job 
+hadoop jar usaf.jar bigdata.Job1_Driver /input_usaf/usaf_data /output_usaf
+
+# getting the data to local directory
+hdfs dfs -get /output_usaf/part-r-00000 outputFromUSAF.txt
+
+# printing the data 
+hdfs dfs -cat /output_usaf/part-r-00000 

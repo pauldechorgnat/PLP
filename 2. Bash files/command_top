@@ -1,0 +1,20 @@
+# creating an input directory
+hdfs dfs -mkdir /input_top/
+
+#creating an output directory
+hdfs dfs -mkdir /output_top/
+
+
+# getting the data into the hdfs 
+hdfs dfs -copyFromLocal arbres.csv /input_top/top_data
+
+
+# running the job 
+hadoop jar trees_of_paris.jar bigdata.Job1_Driver /input_top/top_data /output_top/
+
+# printing the results 
+hdfs dfs -cat /output_top/part-r-00000
+
+# getting the results onto local filesystem
+
+hdfs dfs -get /output_top/part-r-00000 outputTreeOfParis.txt

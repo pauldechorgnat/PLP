@@ -1,0 +1,19 @@
+# creating an input directory
+hdfs dfs -mkdir /input_top/
+
+#creating an output directory
+hdfs dfs -mkdir /output_top_display/
+
+
+# getting the data into the hdfs 
+hdfs dfs -copyFromLocal arbres.csv /input_top/top_data
+
+# running the job 
+hadoop jar yearheighttree.jar bigdata.Job1_Driver /input_top/top_data /output_top_display/
+
+# printing the results 
+hdfs dfs -cat /output_top_display/part-r-00000
+
+# getting the results onto local file system
+hdfs dfs -get /output_top_display/part-r-00000 outputDisplayTrees.txt
+

@@ -1,0 +1,32 @@
+# making in input directory
+hdfs dfs -mkdir /input_pagerank/
+
+# making an output directory
+hdfs dfs -mkdir /output_pagerank/
+
+# downloading input data
+wget https://snap.stanford.edu/data/soc-Epinions1.txt.gz
+
+# dezipping the data 
+gunzip soc-Epinions1.txt.gz
+
+# copying data from local to the hadoop folder 
+hdfs dfs -copyFromLocal soc-Epinions1.txt /input_pagerank/input_data.txt
+
+# running the first job 
+hadoop jar pagerank.jar bigdata.Job1_Driver /input_pagerank/input_data.txt /output_pagerank/step_1
+
+# running the second job
+hadoop jar pagerank.jar bigdata.Job2_Driver /output_pagerank/step_1/part-r-00000 /output_pagerank/step_2
+
+# running the third job  20 times 
+hadoop jar pagerank.jar bigdata.Job3_Driver /output_pagerank/step_2/part-r-00000 /output_pagerank/step_3_ 20
+
+# running the fourth job
+hadoop jar pagerank.jar bigdata.Job4_Driver /output_pagerank/step_3_19/part-r-00000 /output_pagerank/step_4
+
+# copying hadoop output file on local
+hdfs dfs -get /output_pagerank/step_4/part-r-00000 outputFromPageRank.txt
+
+# printing the results
+hdfs dfs -cat /output_pagerank/step_4/part-r-00000

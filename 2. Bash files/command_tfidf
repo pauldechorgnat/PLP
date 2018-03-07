@@ -1,0 +1,38 @@
+# creating an input directory
+hdfs dfs -mkdir /input_tfidf/
+
+# creating an output directory
+hdfs dfs -mkdir /output_tfidf/
+
+# downloading the first text 
+wget http://www.textfiles.com/etext/FICTION/defoe-robinson-103.txt
+
+# storing it in the input directory
+hdfs dfs -copyFromLocal defoe-robinson-103.txt /input_tfidf/robinson
+
+# downloading the second text 
+wget http://www.textfiles.com/etext/FICTION/callwild
+
+# storing it in the input directory
+hdfs dfs -copyFromLocal callwild /input_tfidf/callwild
+
+# checking the content of the input directory 
+hdfs dfs -ls /input_tfidf/
+
+# running first job 
+hadoop jar tfidf.jar bigdata.Job1_Driver /input_tfidf/ /output_tfidf/step_1
+
+# running second job 
+hadoop jar tfidf.jar bigdata.Job2_Driver /output_tfidf/step_1/part-r-00000 /output_tfidf/step_2
+
+# running third job
+hadoop jar tfidf.jar bigdata.Job3_Driver /output_tfidf/step_2/part-r-00000 /output_tfidf/step_3
+
+# running fourth job
+hadoop jar tfidf.jar bigdata.Job4_Driver /output_tfidf/step_3/part-r-00000 /output_tfidf/step_4
+
+# copying hadoop output file on local
+hdfs dfs -get /output_tfidf/step_4/part-r-00000 outputFromTFIDF.txt
+
+# checking the results
+hdfs dfs -cat /output_tfidf/step_4/part-r-00000
